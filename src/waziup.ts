@@ -236,13 +236,7 @@ export class Waziup {
         this.host = host;
         this.auth = auth;
     }
-    /**
-     * this function is used to set token
-     * @param token 
-     */
-    setToken(token: string) {
-        this.auth = token;
-    }
+
     /**
      * Get the ID of the Waziup device. *Use on Wazigates only!*
      */
@@ -973,12 +967,12 @@ export class Waziup {
     /**
      * @category Generic API
      */
-    async get<T>(path: string) {
-        var resp = await fetch(this.toURL(path),{
+    async get<T>(path: string,token='') {
+        var resp = await fetch(this.toURL(path),token?{
             headers:{
-                "Cookie": "Token=" + this.auth,
+                "Cookie": "Token=" + token,
             }
-        });
+        }:{});
         const contentType = resp.headers.get("Content-Type");
         if(!resp.ok) {
             if(contentType?.startsWith("application/json")) {
