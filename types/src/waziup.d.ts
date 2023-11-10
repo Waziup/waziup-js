@@ -1,5 +1,5 @@
 /// <reference types="node" />
-import * as mqtt from "mqtt";
+import * as mqtt from "precompiled-mqtt";
 export declare type Meta = {
     [key: string]: any;
 };
@@ -199,7 +199,7 @@ export declare class Waziup {
     reconnectMQTT(): void;
     subscribe<T = any>(path: string, cb: (msg: T, topic: string) => void): void;
     unsubscribe(path: string, cb: (data: any, topic: string) => void): void;
-    get<T>(path: string): Promise<T>;
+    get<T>(path: string, token?: string): Promise<T>;
     fetch(path: string, init?: RequestInit): Promise<Response>;
     del<T = void>(path: string): Promise<T>;
     set<T = void>(path: string, val: any): Promise<T>;

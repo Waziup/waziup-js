@@ -1,13 +1,4 @@
-import * as mqtt from "mqtt";
-
-/** @hidden */
-var univFetch: (input: RequestInfo, init?: RequestInit) => Promise<Response>;
-
-if (process.title !== "browser") {
-    univFetch = require('node-fetch');
-} else {
-    univFetch = window.fetch;
-}
+import * as mqtt from "precompiled-mqtt";
 
 /**
  * Every sensor, actuator and device can have metadata.
@@ -252,7 +243,7 @@ export class Waziup {
     async getID(): Promise<ID> {
         return this.get<ID>("device/id");
     }
-
+    
     /**
      * Get the device with this ID.
      */
@@ -976,8 +967,12 @@ export class Waziup {
     /**
      * @category Generic API
      */
-    async get<T>(path: string) {
-        var resp = await univFetch(this.toURL(path));
+    async get<T>(path: string,token='') {
+        var resp = await fetch(this.toURL(path),token?{
+            headers:{
+                "Cookie": "Token=" + token,
+            }
+        }:{});
         const contentType = resp.headers.get("Content-Type");
         if(!resp.ok) {
             if(contentType?.startsWith("application/json")) {
@@ -994,14 +989,14 @@ export class Waziup {
     }
 
     async fetch(path: string, init?: RequestInit): Promise<Response> {
-        return univFetch(path, init);
+        return fetch(path, init);
     }
 
     /**
      * @category Generic API
      */
     async del<T=void>(path: string) {
-        var resp = await univFetch(this.toURL(path), {
+        var resp = await fetch(this.toURL(path), {
             method: "DELETE"
         });
         const contentType = resp.headers.get("Content-Type");
@@ -1024,10 +1019,10 @@ export class Waziup {
      * @category Generic API
      */
     async set<T=void>(path: string, val: any): Promise<T> {
-        var resp = await univFetch(this.toURL(path), {
+        var resp = await fetch(this.toURL(path), {
             method: "POST",
             headers: {
-                "Content-Type": "application/json; charset=utf-8"
+                "Content-Type": path==='auth/token' ||'auth/retoken'? 'text/plain':'application/json; charset=utf-8'
             },
             body: JSON.stringify(val)
         });
