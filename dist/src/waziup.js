@@ -9,9 +9,6 @@ class Waziup {
         this.host = host;
         this.auth = auth;
     }
-    setToken(token) {
-        this.auth = token;
-    }
     async getID() {
         return this.get("device/id");
     }
@@ -404,13 +401,13 @@ class Waziup {
             }
         }
     }
-    async get(path) {
+    async get(path, token = '') {
         var _a, _b;
-        var resp = await fetch(this.toURL(path), {
+        var resp = await fetch(this.toURL(path), token ? {
             headers: {
-                "Cookie": "Token=" + this.auth,
+                "Cookie": "Token=" + token,
             }
-        });
+        } : {});
         const contentType = resp.headers.get("Content-Type");
         if (!resp.ok) {
             if ((_a = contentType) === null || _a === void 0 ? void 0 : _a.startsWith("application/json")) {

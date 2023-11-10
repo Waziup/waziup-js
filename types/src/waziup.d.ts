@@ -120,7 +120,6 @@ export declare class Waziup {
     getDeviceName(device: ID): Promise<string>;
     getDeviceName(): Promise<string>;
     deleteDevice(device: ID): Promise<void>;
-    setToken(token: string): void;
     setDeviceName(device: ID, name: string): Promise<void>;
     setDeviceName(name: string): Promise<void>;
     getDeviceMeta(device: ID): Promise<Meta>;
@@ -200,7 +199,7 @@ export declare class Waziup {
     reconnectMQTT(): void;
     subscribe<T = any>(path: string, cb: (msg: T, topic: string) => void): void;
     unsubscribe(path: string, cb: (data: any, topic: string) => void): void;
-    get<T>(path: string): Promise<T>;
+    get<T>(path: string, token?: string): Promise<T>;
     fetch(path: string, init?: RequestInit): Promise<Response>;
     del<T = void>(path: string): Promise<T>;
     set<T = void>(path: string, val: any): Promise<T>;
