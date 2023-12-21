@@ -191,6 +191,10 @@ export interface AppConfig {
     state?: "started" | "stopped" | "starting" | "stopping" | "uninstalled" ;
     restart?: "always" | "on-failure" | "unless-stopped" | "no";
 }
+export interface StartAppConfig {
+    action?: "start" | "stop" | "first-start"
+    restart?: "always" | "on-failure" | "unless-stopped" | "no";
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -794,6 +798,12 @@ export class Waziup {
      * @category Apps
      */
     async setAppConfig(id: string, config: AppConfig) {
+        return this.set(`apps/${id}`, config);
+    }
+    /**
+     * @category Apps
+     */
+    async startStopApp(id: string, config: StartAppConfig) {
         return this.set(`apps/${id}`, config);
     }
 

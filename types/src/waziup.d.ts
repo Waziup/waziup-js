@@ -105,6 +105,10 @@ export interface AppConfig {
     state?: "started" | "stopped" | "starting" | "stopping" | "uninstalled";
     restart?: "always" | "on-failure" | "unless-stopped" | "no";
 }
+export interface StartAppConfig {
+    action?: "start" | "stop" | "first-start";
+    restart?: "always" | "on-failure" | "unless-stopped" | "no";
+}
 export declare class Waziup {
     private host;
     private auth;
@@ -180,6 +184,7 @@ export declare class Waziup {
     getApps(): Promise<App[]>;
     getApp(id: string): Promise<App>;
     setAppConfig(id: string, config: AppConfig): Promise<void>;
+    startStopApp(id: string, config: StartAppConfig): Promise<void>;
     uninstallApp(id: string, keepConfig: boolean): Promise<void>;
     installApp(id: string): Promise<void>;
     toProxyURL(app: string, path: string): string;

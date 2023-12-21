@@ -285,6 +285,9 @@ class Waziup {
     async setAppConfig(id, config) {
         return this.set(`apps/${id}`, config);
     }
+    async startStopApp(id, config) {
+        return this.set(`apps/${id}`, config);
+    }
     uninstallApp(id, keepConfig) {
         return this.del(`apps/${id}?keepConfig=${keepConfig}`);
     }
