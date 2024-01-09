@@ -44,10 +44,10 @@ class Waziup {
     }
     async setDeviceName(arg1, arg2) {
         if (arguments.length === 2) {
-            await this.set(`device/${arg1}/name`, arg2);
+            await this.set(`devices/${arg1}/name`, arg2);
         }
         else {
-            await this.set(`device/name`, arg1);
+            await this.set(`devices/name`, arg1);
         }
     }
     async getDeviceMeta(device) {
