@@ -62,8 +62,10 @@ interface ConnectSettings {
 export async function connect(settings?: ConnectSettings): Promise<Waziup> {
     if (settings) {
         var host = settings.host;
+        var token = settings.token;
     } else {
         var host = "";
+        var token = "";
     }
-    return new Waziup(host, "");
+    return new Waziup(host, token);
 }
