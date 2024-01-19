@@ -247,6 +247,9 @@ export class Waziup {
     async getID(): Promise<ID> {
         return this.get<ID>("device/id");
     }
+    async authToken(username:string,password:string): Promise<string> {
+        return this.set<string>("auth/token", {username,password});
+    }
     
     /**
      * Get the device with this ID.
