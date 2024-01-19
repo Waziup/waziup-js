@@ -977,12 +977,12 @@ export class Waziup {
     /**
      * @category Generic API
      */
-    async get<T>(path: string,token='') {
-        var resp = await fetch(this.toURL(path),token?{
+    async get<T>(path: string) {
+        var resp = await fetch(this.toURL(path),{
             headers:{
-                "Cookie": "Token=" + token,
+                "Cookie": "Token=" + this.auth,
             }
-        }:{});
+        });
         const contentType = resp.headers.get("Content-Type");
         if(!resp.ok) {
             if(contentType?.startsWith("application/json")) {
