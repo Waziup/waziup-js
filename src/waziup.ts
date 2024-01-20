@@ -247,6 +247,12 @@ export class Waziup {
     async getID(): Promise<ID> {
         return this.get<ID>("device/id");
     }
+    async authToken(username:string,password:string){
+        return this.set<ID>("auth/token", {username,password});
+    }
+    async setToken(token:string){
+        this.auth = token;
+    }
     
     /**
      * Get the device with this ID.
@@ -977,12 +983,15 @@ export class Waziup {
     /**
      * @category Generic API
      */
-    async get<T>(path: string,token='') {
-        var resp = await fetch(this.toURL(path),token?{
+    async get<T>(path: string) {
+        if(!this.auth){
+            throw "Not authenticated";
+        }
+        var resp = await fetch(this.toURL(path),{
             headers:{
-                "Cookie": "Token=" + token,
+                "Cookie": "Token=" + this.auth,
             }
-        }:{});
+        });
         const contentType = resp.headers.get("Content-Type");
         if(!resp.ok) {
             if(contentType?.startsWith("application/json")) {
