@@ -59,13 +59,32 @@ interface ConnectSettings {
  *   cloud.addValue(myDeviceId, mySensorId, value);
  * ```
  */
-export async function connect(settings?: ConnectSettings): Promise<Waziup> {
-    if (settings) {
-        var host = settings.host;
-        var token = settings.token;
-    } else {
-        var host = "";
-        var token = "";
+type Response = {
+    wazigateID: string;
+    waziup: Waziup;
+}
+export async function connect(settings?: ConnectSettings): Promise<Response> {
+    try {
+        if(settings.host){
+            var resp = await fetch(settings.host + "/device/id", {
+                headers:{
+                    'Content-Type':'text/plain'
+                }
+            });
+            if(!resp.ok) {
+                var data = await resp.json();
+                throw `HTTP Error ${resp.status} ${resp.statusText}\n${data}`;
+                
+            }
+            var wazigateID = await resp.text();
+            return {
+                wazigateID,
+                waziup:new Waziup(settings.host),
+            }
+        }else{
+            throw "No host specified";
+        }
+    } catch (error) {
+        throw error;
     }
-    return new Waziup(host, token);
 }

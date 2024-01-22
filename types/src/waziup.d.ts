@@ -109,15 +109,27 @@ export interface StartAppConfig {
     action?: "start" | "stop" | "first-start";
     restart?: "always" | "on-failure" | "unless-stopped" | "no";
 }
+interface User {
+    ID: string;
+    name: string;
+    password: string;
+    newPassword: string;
+    username: string;
+}
 export declare class Waziup {
     private host;
     private auth;
     private client;
     private topics;
     clientID: string;
-    constructor(host: string, auth: string);
+    constructor(host: string);
     getID(): Promise<ID>;
     authToken(username: string, password: string): Promise<string>;
+<<<<<<< HEAD
+=======
+    setToken(token: string): Promise<void>;
+    getProfile(): Promise<User>;
+>>>>>>> 2-fix-issue-on-renaming-a-device
     getDevice(id?: ID): Promise<Device>;
     getDevice(): Promise<Device>;
     getDevices(): Promise<Device[]>;
@@ -210,3 +222,4 @@ export declare class Waziup {
     del<T = void>(path: string): Promise<T>;
     set<T = void>(path: string, val: any): Promise<T>;
 }
+export {};

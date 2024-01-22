@@ -5,5 +5,9 @@ interface ConnectSettings {
     password?: string;
     token?: string;
 }
-export declare function connect(settings?: ConnectSettings): Promise<Waziup>;
+declare type Response = {
+    wazigateID: string;
+    waziup: Waziup;
+};
+export declare function connect(settings?: ConnectSettings): Promise<Response>;
 export {};

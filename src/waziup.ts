@@ -210,6 +210,13 @@ export interface StartAppConfig {
  *   console.log("This Wazigate has the ID:", id);
  * ```
  */
+interface User {
+    ID: string;
+    name: string;
+    password: string;
+    newPassword: string;
+    username: string;
+}
 export class Waziup {
 
     /** @hidden */
@@ -236,9 +243,9 @@ export class Waziup {
      * 
      * @hidden
      */
-    constructor(host: string, auth: string) {
+    constructor(host: string) {
         this.host = host;
-        this.auth = auth;
+        this.auth = '';
     }
 
     /**
@@ -247,8 +254,23 @@ export class Waziup {
     async getID(): Promise<ID> {
         return this.get<ID>("device/id");
     }
-    async authToken(username:string,password:string): Promise<string> {
-        return this.set<string>("auth/token", {username,password});
+    /**
+     * Get the token of the Waziup device. *Use on Wazigates only!*
+     */
+    async authToken(username:string,password:string){
+        return this.set<ID>("auth/token", {username,password});
+    }
+    /**
+     * Set the auth token of the Waziup device. *Use on Wazigates only!*
+    */
+    async setToken(token:string){
+        this.auth = token;
+    }
+    /**
+     * Get the user profile
+     */
+    async getProfile(){
+        return this.get<User>("auth/profile");
     }
     
     /**
@@ -981,6 +1003,9 @@ export class Waziup {
      * @category Generic API
      */
     async get<T>(path: string) {
+        if(!this.auth){
+            throw "Not authenticated";
+        }
         var resp = await fetch(this.toURL(path),{
             headers:{
                 "Cookie": "Token=" + this.auth,

@@ -2,18 +2,24 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const mqtt = require("precompiled-mqtt");
 class Waziup {
-    constructor(host, auth) {
+    constructor(host) {
         this.client = null;
         this.topics = {};
         this.clientID = "dashboard_" + Math.random().toString(16).substr(2, 8);
         this.host = host;
-        this.auth = auth;
+        this.auth = '';
     }
     async getID() {
         return this.get("device/id");
     }
     async authToken(username, password) {
         return this.set("auth/token", { username, password });
+    }
+    async setToken(token) {
+        this.auth = token;
+    }
+    async getProfile() {
+        return this.get("auth/profile");
     }
     async getDevice(id) {
         if (!id) {
@@ -409,6 +415,9 @@ class Waziup {
     }
     async get(path) {
         var _a, _b;
+        if (!this.auth) {
+            throw "Not authenticated";
+        }
         var resp = await fetch(this.toURL(path), {
             headers: {
                 "Cookie": "Token=" + this.auth,
