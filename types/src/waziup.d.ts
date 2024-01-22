@@ -109,14 +109,24 @@ export interface StartAppConfig {
     action?: "start" | "stop" | "first-start";
     restart?: "always" | "on-failure" | "unless-stopped" | "no";
 }
+interface User {
+    ID: string;
+    name: string;
+    password: string;
+    newPassword: string;
+    username: string;
+}
 export declare class Waziup {
     private host;
     private auth;
     private client;
     private topics;
     clientID: string;
-    constructor(host: string, auth: string);
+    constructor(host: string);
     getID(): Promise<ID>;
+    authToken(username: string, password: string): Promise<string>;
+    setToken(token: string): Promise<void>;
+    getProfile(): Promise<User>;
     getDevice(id?: ID): Promise<Device>;
     getDevice(): Promise<Device>;
     getDevices(): Promise<Device[]>;
@@ -204,8 +214,9 @@ export declare class Waziup {
     reconnectMQTT(): void;
     subscribe<T = any>(path: string, cb: (msg: T, topic: string) => void): void;
     unsubscribe(path: string, cb: (data: any, topic: string) => void): void;
-    get<T>(path: string, token?: string): Promise<T>;
+    get<T>(path: string): Promise<T>;
     fetch(path: string, init?: RequestInit): Promise<Response>;
     del<T = void>(path: string): Promise<T>;
     set<T = void>(path: string, val: any): Promise<T>;
 }
+export {};
