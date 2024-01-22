@@ -125,11 +125,8 @@ export declare class Waziup {
     constructor(host: string);
     getID(): Promise<ID>;
     authToken(username: string, password: string): Promise<string>;
-<<<<<<< HEAD
-=======
     setToken(token: string): Promise<void>;
     getProfile(): Promise<User>;
->>>>>>> 2-fix-issue-on-renaming-a-device
     getDevice(id?: ID): Promise<Device>;
     getDevice(): Promise<Device>;
     getDevices(): Promise<Device[]>;
