@@ -60,27 +60,31 @@ interface ConnectSettings {
  * ```
  */
 type Response = {
-    token: string;
+    wazigateID: string;
     waziup: Waziup;
 }
 export async function connect(settings?: ConnectSettings): Promise<Response> {
-    if(settings.host){
-        var resp = await fetch(settings.host + "/device/id", {
-            headers:{
-                'Content-Type':'text/plain'
+    try {
+        if(settings.host){
+            var resp = await fetch(settings.host + "/device/id", {
+                headers:{
+                    'Content-Type':'text/plain'
+                }
+            });
+            if(!resp.ok) {
+                var data = await resp.json();
+                throw `HTTP Error ${resp.status} ${resp.statusText}\n${data}`;
+                
             }
-        });
-        if(!resp.ok) {
-            var data = await resp.json();
-            throw `HTTP Error ${resp.status} ${resp.statusText}\n${data}`;
-            
+            var wazigateID = await resp.text();
+            return {
+                wazigateID,
+                waziup:new Waziup(settings.host),
+            }
+        }else{
+            throw "No host specified";
         }
-        var token = await resp.text();
-        return {
-            token,
-            waziup:new Waziup(settings.host, token),
-        }
-    }else{
-        throw "No host specified";
+    } catch (error) {
+        throw error;
     }
 }
