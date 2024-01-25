@@ -1009,6 +1009,7 @@ export class Waziup {
         var resp = await fetch(this.toURL(path),{
             headers:{
                 "Cookie": "Token=" + this.auth,
+                "Authorization": "Bearer" + this.auth,
             }
         });
         const contentType = resp.headers.get("Content-Type");
