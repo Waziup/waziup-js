@@ -419,10 +419,8 @@ class Waziup {
             throw "Not authenticated";
         }
         var resp = await fetch(this.toURL(path), {
-            headers: {
-                "Cookie": "Token=" + this.auth,
-                "Authorization": "Bearer" + this.auth,
-            }
+            credentials: 'include',
+            method: "GET",
         });
         const contentType = resp.headers.get("Content-Type");
         if (!resp.ok) {
