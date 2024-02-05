@@ -419,7 +419,6 @@ class Waziup {
             throw "Not authenticated";
         }
         var resp = await fetch(this.toURL(path), {
-            credentials: 'include',
             method: "GET",
         });
         const contentType = resp.headers.get("Content-Type");
@@ -443,7 +442,7 @@ class Waziup {
     async del(path) {
         var _a, _b;
         var resp = await fetch(this.toURL(path), {
-            method: "DELETE"
+            method: "DELETE",
         });
         const contentType = resp.headers.get("Content-Type");
         if (!resp.ok) {

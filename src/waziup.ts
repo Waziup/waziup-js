@@ -1007,7 +1007,6 @@ export class Waziup {
             throw "Not authenticated";
         }
         var resp = await fetch(this.toURL(path),{
-            credentials:'include',
             method: "GET",
         });
         const contentType = resp.headers.get("Content-Type");
@@ -1035,7 +1034,6 @@ export class Waziup {
     async del<T=void>(path: string) {
         var resp = await fetch(this.toURL(path), {
             method: "DELETE",
-            credentials:'include',
         });
         const contentType = resp.headers.get("Content-Type");
         if(!resp.ok) {
@@ -1059,7 +1057,6 @@ export class Waziup {
     async set<T=void>(path: string, val: any): Promise<T> {
         var resp = await fetch(this.toURL(path), {
             method: "POST",
-            credentials:'include',
             headers: {
                 "Content-Type": path==='auth/token' ||'auth/retoken'? 'text/plain':'application/json; charset=utf-8'
             },
