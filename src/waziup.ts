@@ -862,9 +862,8 @@ export class Waziup {
     toURL(path: string) {
         if (this.host === "") return path;
 
-        const URL = `/${this.host}/${path}`;
-        console.log("New URL: %s", URL);
-        console.log("Old URL: %s", `${this.host}/${path}`);
+        const URL = `http://${this.host}/${path}`;
+        console.log("URL: %s", URL);
         return URL;
     }
 
