@@ -1011,6 +1011,9 @@ export class Waziup {
         }
         var resp = await fetch(this.toURL(path),{
             method: "GET",
+            headers:{
+                'Authorization': 'Bearer ' + this.auth,
+            }
         });
         const contentType = resp.headers.get("Content-Type");
         if(!resp.ok) {
