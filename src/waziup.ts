@@ -1040,6 +1040,9 @@ export class Waziup {
     async del<T=void>(path: string) {
         var resp = await fetch(this.toURL(path), {
             method: "DELETE",
+            headers:{
+                'Authorization': 'Bearer ' + this.auth,
+            },
         });
         const contentType = resp.headers.get("Content-Type");
         if(!resp.ok) {
@@ -1064,7 +1067,8 @@ export class Waziup {
         var resp = await fetch(this.toURL(path), {
             method: "POST",
             headers: {
-                "Content-Type": path==='auth/token' ||'auth/retoken'? 'text/plain':'application/json; charset=utf-8'
+                "Content-Type": path==='auth/token' ||'auth/retoken'? 'text/plain':'application/json; charset=utf-8',
+                'Authorization': 'Bearer ' + this.auth,
             },
             body: JSON.stringify(val)
         });
