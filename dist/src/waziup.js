@@ -310,7 +310,6 @@ class Waziup {
         if (this.host === "")
             return path;
         const URL = `${this.host}/${path}`;
-        console.log("URL: %s", URL);
         return URL;
     }
     connectMQTT(onConnect, onError = null, opt = {}) {
@@ -417,9 +416,6 @@ class Waziup {
     }
     async get(path) {
         var _a, _b;
-        if (!this.auth) {
-            throw "Not authenticated";
-        }
         var resp = await fetch(this.toURL(path), {
             method: "GET",
             headers: {
@@ -470,12 +466,15 @@ class Waziup {
     }
     async set(path, val) {
         var _a, _b;
+        const headers = {
+            "Content-Type": path === 'auth/token' || 'auth/retoken' ? 'text/plain' : 'application/json; charset=utf-8',
+        };
+        if ((path !== ('auth/token' || 'auth/retoken'))) {
+            headers['Authorization'] = 'Bearer ' + this.auth;
+        }
         var resp = await fetch(this.toURL(path), {
             method: "POST",
-            headers: {
-                "Content-Type": path === 'auth/token' || 'auth/retoken' ? 'text/plain' : 'application/json; charset=utf-8',
-                'Authorization': 'Bearer ' + this.auth,
-            },
+            headers: headers,
             body: JSON.stringify(val)
         });
         const contentType = resp.headers.get("Content-Type");

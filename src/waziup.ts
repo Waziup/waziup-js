@@ -861,9 +861,7 @@ export class Waziup {
      */
     toURL(path: string) {
         if (this.host === "") return path;
-
         const URL = `${this.host}/${path}`;
-        console.log("URL: %s", URL);
         return URL;
     }
 
@@ -1006,9 +1004,6 @@ export class Waziup {
      * @category Generic API
      */
     async get<T>(path: string) {
-        if(!this.auth){
-            throw "Not authenticated";
-        }
         var resp = await fetch(this.toURL(path),{
             method: "GET",
             headers:{
@@ -1064,12 +1059,15 @@ export class Waziup {
      * @category Generic API
      */
     async set<T=void>(path: string, val: any): Promise<T> {
+        const headers:{[key:string]:string} = {
+            "Content-Type": path==='auth/token' ||'auth/retoken'? 'text/plain':'application/json; charset=utf-8',
+        };
+        if((path !==('auth/token' || 'auth/retoken')) ){
+            headers['Authorization']= 'Bearer ' + this.auth;
+        }
         var resp = await fetch(this.toURL(path), {
             method: "POST",
-            headers: {
-                "Content-Type": path==='auth/token' ||'auth/retoken'? 'text/plain':'application/json; charset=utf-8',
-                'Authorization': 'Bearer ' + this.auth,
-            },
+            headers: headers,
             body: JSON.stringify(val)
         });
         const contentType = resp.headers.get("Content-Type");
