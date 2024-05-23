@@ -465,7 +465,7 @@ class Waziup {
         return;
     }
     async set(path, val) {
-        var _a, _b;
+        var _a, _b, _c;
         const headers = {
             "Content-Type": path === 'auth/token' || 'auth/retoken' ? 'text/plain' : 'application/json; charset=utf-8',
         };
@@ -488,8 +488,15 @@ class Waziup {
                 throw `HTTP Error ${resp.status} ${resp.statusText}\n${data}`;
             }
         }
+        console;
         if ((_b = contentType) === null || _b === void 0 ? void 0 : _b.startsWith("application/json")) {
             return resp.json();
+        }
+        else if ((_c = contentType) === null || _c === void 0 ? void 0 : _c.startsWith("text/plain")) {
+            return resp.text();
+        }
+        else {
+            return;
         }
     }
 }

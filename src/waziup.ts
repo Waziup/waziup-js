@@ -1058,7 +1058,7 @@ export class Waziup {
     /**
      * @category Generic API
      */
-    async set<T=void>(path: string, val: any): Promise<T> {
+    async set<T=void>(path: string, val: any): Promise<T | string> {
         const headers:{[key:string]:string} = {
             "Content-Type": path==='auth/token' ||'auth/retoken'? 'text/plain':'application/json; charset=utf-8',
         };
@@ -1080,8 +1080,13 @@ export class Waziup {
                 throw `HTTP Error ${resp.status} ${resp.statusText}\n${data}`;
             }
         }
+        console
         if(contentType?.startsWith("application/json")) {
             return resp.json() as Promise<T>;
+        }else if(contentType?.startsWith("text/plain")){
+            return resp.text() as Promise<string>;
+        }else{
+            return;
         }
     }
 }

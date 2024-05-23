@@ -137,7 +137,7 @@ export declare class Waziup {
     setDeviceName(device: ID, name: string): Promise<void>;
     setDeviceName(name: string): Promise<void>;
     getDeviceMeta(device: ID): Promise<Meta>;
-    setDeviceMeta(device: ID, meta: Meta): Promise<void>;
+    setDeviceMeta(device: ID, meta: Meta): Promise<string | void>;
     getSensors(device?: ID): Promise<Sensor[]>;
     getSensors(): Promise<Sensor[]>;
     getSensor(device: ID, sensor: ID): Promise<Sensor>;
@@ -188,15 +188,15 @@ export declare class Waziup {
     addCloud(cloud: Cloud): Promise<ID>;
     getCloud(id: ID): Promise<Cloud>;
     deleteCloud(id: ID): Promise<void>;
-    setCloudPaused(id: ID, paused: boolean): Promise<void>;
+    setCloudPaused(id: ID, paused: boolean): Promise<string | void>;
     setCloudCredentials(id: ID, username: string, token: string): Promise<void>;
     getCloudStatus(id: ID): Promise<CloudStatus[]>;
     getApps(): Promise<App[]>;
     getApp(id: string): Promise<App>;
-    setAppConfig(id: string, config: AppConfig): Promise<void>;
-    startStopApp(id: string, config: StartAppConfig): Promise<void>;
+    setAppConfig(id: string, config: AppConfig): Promise<string | void>;
+    startStopApp(id: string, config: StartAppConfig): Promise<string | void>;
     uninstallApp(id: string, keepConfig: boolean): Promise<void>;
-    installApp(id: string): Promise<void>;
+    installApp(id: string): Promise<string | void>;
     toProxyURL(app: string, path: string): string;
     toURL(path: string): string;
     connectMQTT(onConnect: () => void, onError?: (err: Error) => void, opt?: mqtt.IClientOptions): void;
@@ -217,6 +217,6 @@ export declare class Waziup {
     get<T>(path: string): Promise<T>;
     fetch(path: string, init?: RequestInit): Promise<Response>;
     del<T = void>(path: string): Promise<T>;
-    set<T = void>(path: string, val: any): Promise<T>;
+    set<T = void>(path: string, val: any): Promise<T | string>;
 }
 export {};
