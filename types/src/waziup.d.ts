@@ -150,7 +150,7 @@ export declare class Waziup {
     getSensorValue(sensor: ID): Promise<Value>;
     addSensorValue(device: ID, sensor: ID, value: Value | ValueWithTime): Promise<void>;
     addSensorValue(sensor: ID, value: Value | ValueWithTime): Promise<void>;
-    getSensorValues(device: ID, sensor: ID): Promise<Value>;
+    getSensorValues(device: ID, sensor: ID, limit?: number): Promise<Value>;
     getSensorValues(sensor: ID): Promise<Value>;
     addSensorValues(device: ID, sensor: ID, values: Value[] | ValueWithTime[]): Promise<void>;
     addSensorValues(sensor: ID, values: Value[] | ValueWithTime[]): Promise<void>;
@@ -172,7 +172,7 @@ export declare class Waziup {
     getActuatorValue(actuator: ID): Promise<Value>;
     addActuatorValue(device: ID, actuator: ID, value: Value | ValueWithTime): Promise<void>;
     addActuatorValue(actuator: ID, value: Value | ValueWithTime): Promise<void>;
-    getActuatorValues(device: ID, actuator: ID): Promise<Value>;
+    getActuatorValues(device: ID, actuator: ID, limit?: number): Promise<Value>;
     getActuatorValues(actuator: ID): Promise<Value>;
     addActuatorValues(device: ID, actuator: ID, values: Value[] | ValueWithTime[]): Promise<void>;
     addActuatorValues(actuator: ID, values: Value[] | ValueWithTime[]): Promise<void>;

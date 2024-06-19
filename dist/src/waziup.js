@@ -119,12 +119,12 @@ class Waziup {
             await this.set(`devices/${id1}/sensors/${arg2}/value`, arg3);
         }
     }
-    async getSensorValues(id1, id2) {
-        if (!id2) {
-            var values = await this.get(`sensors/${id1}/values`);
+    async getSensorValues(deviceId, sensorID, limit) {
+        if (!sensorID) {
+            var values = await this.get(`sensors/${deviceId}/values?limit=${limit ? limit : 500}`);
         }
         else {
-            var values = await this.get(`devices/${id1}/sensors/${id2}/values`);
+            var values = await this.get(`devices/${deviceId}/sensors/${sensorID}/values?limit=${limit ? limit : 500}`);
         }
         values.forEach(polishValue);
         return values;
@@ -216,12 +216,12 @@ class Waziup {
             await this.set(`devices/${id1}/actuators/${arg2}/value`, arg3);
         }
     }
-    async getActuatorValues(id1, id2) {
-        if (!id2) {
-            var values = await this.get(`actuators/${id1}/values`);
+    async getActuatorValues(deviceID, actuatorID, limit) {
+        if (!actuatorID) {
+            var values = await this.get(`actuators/${deviceID}/values?limit=${limit ? limit : 500}`);
         }
         else {
-            var values = await this.get(`devices/${id1}/actuators/${id2}/values`);
+            var values = await this.get(`devices/${deviceID}/actuators/${actuatorID}/values?limit=${limit ? limit : 500}`);
         }
         values.forEach(polishValue);
         return values;

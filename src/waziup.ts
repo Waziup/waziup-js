@@ -474,16 +474,16 @@ export class Waziup {
     /**
      * Get (read) uploaded sensor values.
      */
-    async getSensorValues(device: ID, sensor: ID): Promise<Value>;
+    async getSensorValues(device: ID, sensor: ID,limit?:number): Promise<Value>;
     /**
      * Get (read) uploaded sensor values of the Wazigate-sensor. *Use on Wazigates only!*
      */
     async getSensorValues(sensor: ID): Promise<Value>;
-    async getSensorValues(id1: ID, id2?: ID): Promise<Value> {
-        if (!id2) {
-            var values = await this.get<ValueWithTime[]>(`sensors/${id1}/values`);
+    async getSensorValues(deviceId: ID, sensorID?: ID,limit?:number): Promise<Value> {
+        if (!sensorID) {
+            var values = await this.get<ValueWithTime[]>(`sensors/${deviceId}/values?limit=${limit?limit:500}`);
         } else {
-            var values = await this.get<ValueWithTime[]>(`devices/${id1}/sensors/${id2}/values`);
+            var values = await this.get<ValueWithTime[]>(`devices/${deviceId}/sensors/${sensorID}/values?limit=${limit?limit:500}`);
         }
         values.forEach(polishValue);
         return values;
@@ -664,16 +664,16 @@ export class Waziup {
     /**
      * Get (read) uploaded actuator values.
      */
-    async getActuatorValues(device: ID, actuator: ID): Promise<Value>;
+    async getActuatorValues(device: ID, actuator: ID,limit?: number): Promise<Value>;
     /**
      * Get (read) uploaded actuator values of the Wazigate-actuator. *Use on Wazigates only!*
      */
     async getActuatorValues(actuator: ID): Promise<Value>;
-    async getActuatorValues(id1: ID, id2?: ID): Promise<Value> {
-        if (!id2) {
-            var values = await this.get<ValueWithTime[]>(`actuators/${id1}/values`);
+    async getActuatorValues(deviceID: ID, actuatorID?: ID,limit?: number): Promise<Value> {
+        if (!actuatorID) {
+            var values = await this.get<ValueWithTime[]>(`actuators/${deviceID}/values?limit=${limit?limit:500}`);
         } else {
-            var values = await this.get<ValueWithTime[]>(`devices/${id1}/actuators/${id2}/values`);
+            var values = await this.get<ValueWithTime[]>(`devices/${deviceID}/actuators/${actuatorID}/values?limit=${limit?limit:500}`);
         }
         values.forEach(polishValue);
         return values;
