@@ -467,9 +467,9 @@ class Waziup {
     async set(path, val) {
         var _a, _b, _c;
         const headers = {
-            "Content-Type": path === 'auth/token' || 'auth/retoken' ? 'text/plain' : 'application/json; charset=utf-8',
+            "Content-Type": 'application/json; charset=utf-8',
         };
-        if ((path !== ('auth/token' || 'auth/retoken'))) {
+        if ((path !== this.auth) || (path !== 'auth/retoken')) {
             headers['Authorization'] = 'Bearer ' + this.auth;
         }
         var resp = await fetch(this.toURL(path), {
