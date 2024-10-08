@@ -1,6 +1,6 @@
 {
     "name": "waziup-js",
-    "version": "2.2.0-beta1",
+    "version": "2.2.0",
     "description": "Javascript client for the WAZIUP API",
     "license": "Apache License v2",
     "main": "lib/index.js",
