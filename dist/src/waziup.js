@@ -485,7 +485,10 @@ class Waziup {
             }
             else {
                 var text = await resp.text();
-                throw `HTTP Error ${resp.status} ${resp.statusText}\n${data}`;
+                if (text) {
+                    throw text;
+                }
+                throw `HTTP Error ${resp.status} ${resp.statusText}`;
             }
         }
         console;
