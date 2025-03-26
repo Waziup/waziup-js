@@ -214,6 +214,8 @@ export declare class Waziup {
     reconnectMQTT(): void;
     subscribe<T = any>(path: string, cb: (msg: T, topic: string) => void): void;
     unsubscribe(path: string, cb: (data: any, topic: string) => void): void;
+    getTokenExpiry(token: string): number;
+    isTokenExpiringSoon(token: string, buffer?: number): boolean;
     get<T>(path: string): Promise<T>;
     fetch(path: string, init?: RequestInit): Promise<Response>;
     del<T = void>(path: string): Promise<T>;

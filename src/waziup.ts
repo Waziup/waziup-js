@@ -1003,8 +1003,64 @@ export class Waziup {
     /**
      * @category Generic API
      */
-    async get<T>(path: string) {
-        var resp = await fetch(this.toURL(path),{
+    // async get<T>(path: string) {
+    //     var resp = await fetch(this.toURL(path),{
+    //         method: "GET",
+    //         headers:{
+    //             'Authorization': 'Bearer ' + this.auth,
+    //         }
+    //     });
+    //     const contentType = resp.headers.get("Content-Type");
+    //     if(!resp.ok) {
+    //         if(contentType?.startsWith("application/json")) {
+    //             var data = await resp.json();
+    //             throw `HTTP Error ${resp.status} ${resp.statusText}\n${data}`;
+    //         } else {
+    //             var text = await resp.text();
+    //             throw `HTTP Error ${resp.status} ${resp.statusText}\n${data}`;
+    //         }
+    //     }
+    //     if(contentType?.startsWith("application/json")) {
+    //         return resp.json() as Promise<T>;
+    //     }
+    // }
+    getTokenExpiry(token: string): number{
+        if(!token) return 0;
+        try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            return payload.exp * 1000
+        } catch (error) {
+            console.log("Failed to parse token: ",error)
+            return 0
+        }
+    }
+    isTokenExpiringSoon(token: string, buffer: number = 120000): boolean{
+        const expiry = this.getTokenExpiry(token);
+        return Date.now() >= (expiry - buffer)
+    }
+    async get<T>(path: string): Promise<T>{
+        if (this.isTokenExpiringSoon(this.auth)) {
+            try {
+                const tokenResp = await fetch(this.toURL('auth/retoken'), {
+                    method: "POST",
+                    headers: {
+                        'Authorization': 'Bearer ' + this.auth,
+                    }
+                });
+                if (!tokenResp.ok) {
+                    throw new Error(`Failed to refresh token: ${tokenResp.statusText}`);
+                }
+                
+                const token: string = await tokenResp.json();
+                sessionStorage.setItem('token',token)
+                await this.setToken(token); // Update stored token
+                this.auth = token; // Update in-memory token
+            } catch (error) {
+                console.error("Error refreshing token: ", error);
+                throw "Failed to refresh token. Please log in again.";
+            }
+        }
+        const resp = await fetch(this.toURL(path),{
             method: "GET",
             headers:{
                 'Authorization': 'Bearer ' + this.auth,
@@ -1017,7 +1073,10 @@ export class Waziup {
                 throw `HTTP Error ${resp.status} ${resp.statusText}\n${data}`;
             } else {
                 var text = await resp.text();
-                throw `HTTP Error ${resp.status} ${resp.statusText}\n${data}`;
+                if(text){
+                    throw text;
+                }
+                throw `HTTP Error ${resp.status} ${resp.statusText}`;
             }
         }
         if(contentType?.startsWith("application/json")) {
@@ -1054,18 +1113,78 @@ export class Waziup {
         }
         return;
     }
+    
 
     /**
      * @category Generic API
      */
+    // async set<T=void>(path: string, val: any): Promise<T | string> {
+    //     const headers:{[key:string]:string} = {
+    //        "Content-Type": 'application/json; charset=utf-8',
+    //     };
+    //     if((path !== this.auth) || (path !== 'auth/retoken')){
+    //         headers['Authorization']= 'Bearer ' + this.auth;
+    //     }
+    //     var resp = await fetch(this.toURL(path), {
+    //         method: "POST",
+    //         headers: headers,
+    //         body: JSON.stringify(val)
+    //     });
+    //     const contentType = resp.headers.get("Content-Type");
+    //     if(!resp.ok) {
+    //         if(contentType?.startsWith("application/json")) {
+    //             var data = await resp.json();
+    //             throw `HTTP Error ${resp.status} ${resp.statusText}\n${data}`;
+    //         } else {
+    //             var text = await resp.text();
+    //             if(text){
+    //                 throw text;
+    //             }
+    //             throw `HTTP Error ${resp.status} ${resp.statusText}`;
+    //         }
+    //     }
+    //     console
+    //     if(contentType?.startsWith("application/json")) {
+    //         return resp.json() as Promise<T>;
+    //     }else if(contentType?.startsWith("text/plain")){
+    //         return resp.text() as Promise<string>;
+    //     }else{
+    //         return;
+    //     }
+    // }
+    /**
+     * @category Generic API
+     */
     async set<T=void>(path: string, val: any): Promise<T | string> {
+        if (this.isTokenExpiringSoon(this.auth)) {
+            try {
+                const tokenResp = await fetch(this.toURL('auth/retoken'), {
+                    method: "POST",
+                    headers: {
+                        'Authorization': 'Bearer ' + this.auth,
+                    }
+                });
+                
+                if (!tokenResp.ok) {
+                    throw new Error(`Failed to refresh token: ${tokenResp.statusText}`);
+                }
+                
+                const token: string = await tokenResp.json();
+                sessionStorage.setItem('token',token);
+                await this.setToken(token); 
+                this.auth = token; 
+            } catch (error) {
+                console.error("Error refreshing token", error);
+                throw "Failed to refresh token. Please log in again.";
+            }
+        }
         const headers:{[key:string]:string} = {
            "Content-Type": 'application/json; charset=utf-8',
         };
         if((path !== this.auth) || (path !== 'auth/retoken')){
             headers['Authorization']= 'Bearer ' + this.auth;
         }
-        var resp = await fetch(this.toURL(path), {
+        const resp = await fetch(this.toURL(path), {
             method: "POST",
             headers: headers,
             body: JSON.stringify(val)
@@ -1083,7 +1202,6 @@ export class Waziup {
                 throw `HTTP Error ${resp.status} ${resp.statusText}`;
             }
         }
-        console
         if(contentType?.startsWith("application/json")) {
             return resp.json() as Promise<T>;
         }else if(contentType?.startsWith("text/plain")){

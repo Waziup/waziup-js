@@ -414,9 +414,46 @@ class Waziup {
             }
         }
     }
+    getTokenExpiry(token) {
+        if (!token)
+            return 0;
+        try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            return payload.exp * 1000;
+        }
+        catch (error) {
+            console.log("Failed to parse token: ", error);
+            return 0;
+        }
+    }
+    isTokenExpiringSoon(token, buffer = 120000) {
+        const expiry = this.getTokenExpiry(token);
+        return Date.now() >= (expiry - buffer);
+    }
     async get(path) {
         var _a, _b;
-        var resp = await fetch(this.toURL(path), {
+        if (this.isTokenExpiringSoon(this.auth)) {
+            try {
+                const tokenResp = await fetch(this.toURL('auth/retoken'), {
+                    method: "POST",
+                    headers: {
+                        'Authorization': 'Bearer ' + this.auth,
+                    }
+                });
+                if (!tokenResp.ok) {
+                    throw new Error(`Failed to refresh token: ${tokenResp.statusText}`);
+                }
+                const token = await tokenResp.json();
+                sessionStorage.setItem('token', token);
+                await this.setToken(token);
+                this.auth = token;
+            }
+            catch (error) {
+                console.error("Error refreshing token: ", error);
+                throw "Failed to refresh token. Please log in again.";
+            }
+        }
+        const resp = await fetch(this.toURL(path), {
             method: "GET",
             headers: {
                 'Authorization': 'Bearer ' + this.auth,
@@ -430,7 +467,10 @@ class Waziup {
             }
             else {
                 var text = await resp.text();
-                throw `HTTP Error ${resp.status} ${resp.statusText}\n${data}`;
+                if (text) {
+                    throw text;
+                }
+                throw `HTTP Error ${resp.status} ${resp.statusText}`;
             }
         }
         if ((_b = contentType) === null || _b === void 0 ? void 0 : _b.startsWith("application/json")) {
@@ -466,13 +506,34 @@ class Waziup {
     }
     async set(path, val) {
         var _a, _b, _c;
+        if (this.isTokenExpiringSoon(this.auth)) {
+            try {
+                const tokenResp = await fetch(this.toURL('auth/retoken'), {
+                    method: "POST",
+                    headers: {
+                        'Authorization': 'Bearer ' + this.auth,
+                    }
+                });
+                if (!tokenResp.ok) {
+                    throw new Error(`Failed to refresh token: ${tokenResp.statusText}`);
+                }
+                const token = await tokenResp.json();
+                sessionStorage.setItem('token', token);
+                await this.setToken(token);
+                this.auth = token;
+            }
+            catch (error) {
+                console.error("Error refreshing token", error);
+                throw "Failed to refresh token. Please log in again.";
+            }
+        }
         const headers = {
             "Content-Type": 'application/json; charset=utf-8',
         };
         if ((path !== this.auth) || (path !== 'auth/retoken')) {
             headers['Authorization'] = 'Bearer ' + this.auth;
         }
-        var resp = await fetch(this.toURL(path), {
+        const resp = await fetch(this.toURL(path), {
             method: "POST",
             headers: headers,
             body: JSON.stringify(val)
@@ -491,7 +552,6 @@ class Waziup {
                 throw `HTTP Error ${resp.status} ${resp.statusText}`;
             }
         }
-        console;
         if ((_b = contentType) === null || _b === void 0 ? void 0 : _b.startsWith("application/json")) {
             return resp.json();
         }
