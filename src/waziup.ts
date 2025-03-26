@@ -1156,7 +1156,7 @@ export class Waziup {
      * @category Generic API
      */
     async set<T=void>(path: string, val: any): Promise<T | string> {
-        if (this.isTokenExpiringSoon(this.auth)) {
+        if (this.auth && this.isTokenExpiringSoon(this.auth)) {
             try {
                 const tokenResp = await fetch(this.toURL('auth/retoken'), {
                     method: "POST",

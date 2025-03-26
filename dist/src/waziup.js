@@ -506,7 +506,7 @@ class Waziup {
     }
     async set(path, val) {
         var _a, _b, _c;
-        if (this.isTokenExpiringSoon(this.auth)) {
+        if (this.auth && this.isTokenExpiringSoon(this.auth)) {
             try {
                 const tokenResp = await fetch(this.toURL('auth/retoken'), {
                     method: "POST",
