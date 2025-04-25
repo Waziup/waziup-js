@@ -1034,7 +1034,7 @@ export class Waziup {
             return 0
         }
     }
-    isTokenExpiringSoon(token: string, buffer: number = 120000): boolean{
+    isTokenExpiringSoon(token: string, buffer: number = 180000): boolean{
         const expiry = this.getTokenExpiry(token);
         return Date.now() >= (expiry - buffer)
     }

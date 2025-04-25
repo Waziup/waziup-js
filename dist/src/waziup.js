@@ -426,7 +426,7 @@ class Waziup {
             return 0;
         }
     }
-    isTokenExpiringSoon(token, buffer = 120000) {
+    isTokenExpiringSoon(token, buffer = 180000) {
         const expiry = this.getTokenExpiry(token);
         return Date.now() >= (expiry - buffer);
     }
