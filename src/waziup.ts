@@ -1039,7 +1039,7 @@ export class Waziup {
         return Date.now() >= (expiry - buffer)
     }
     async get<T>(path: string): Promise<T>{
-        if (this.isTokenExpiringSoon(this.auth)) {
+        if (this.auth && this.isTokenExpiringSoon(this.auth)) {
             try {
                 const tokenResp = await fetch(this.toURL('auth/retoken'), {
                     method: "POST",
